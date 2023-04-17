@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="Mobie.js"></script>
+</head>
+<body>
+
+<h1>samsung</h1>
+<button id="onOff-SamSung" onclick="onOff(this.id)">OFF</button>
+<button id="batterySamSung"></button>
+<button id="increaseBatterySS" onclick="increaseBatterySamSung()">Charge Battery</button>
+<br>
+<textarea id="screenSamSung" disabled style="width: 500px; height: 200px;"></textarea>
+<hr>
+<h1>iphone</h1>
+<button id="onOffIphone" onclick="onOff(this.id)">OFF</button>
+<button id="batteryIphone"></button>
+<button id="increaseBatteryIP" onclick="increaseBatteryIphone()">Charge Battery</button>
+
+<br>
+<textarea id="screenIphone" disabled style="width: 500px; height: 200px;"></textarea>
+
+
+<script>
+    let samsung = new Mobie(false,100);
+    let iphone = new Mobie(false,100);
+
+
+    function onOff(id) {
+        if (id == "onOff-SamSung"){
+            samsung.setStatus()
+            if (samsung.getStatus()){
+                document.getElementById('onOff-SamSung').innerHTML = "ON";
+                myGreeting();
+                document.getElementById('screenSamSung').style.backgroundColor = "#f5ced2"
+                document.getElementById('screenSamSung').disabled = false;
+
+            }else {
+                document.getElementById('onOff-SamSung').innerHTML = "OFF";
+                clearTimeout(myTimeoutSamSung);
+                document.getElementById('screenSamSung').style.backgroundColor = "#605a5a"
+                document.getElementById('screenSamSung').disabled = true;
+            }
+        }else {
+            iphone.setStatus()
+            if (iphone.getStatus()){
+                document.getElementById('onOffIphone').innerHTML = "ON";
+                downBattery();
+                document.getElementById('screenIphone').style.backgroundColor = "#f5ced2"
+                document.getElementById('screenIphone').disabled = false;
+
+            }else {
+                document.getElementById('onOffIphone').innerHTML = "OFF";
+                clearTimeout(myTimeoutIphone);
+                document.getElementById('screenIphone').style.backgroundColor = "#605a5a"
+                document.getElementById('screenIphone').disabled = true;
+            }
+        }
+    }
+
+    function showBattery() {
+        document.getElementById('batterySamSung').innerHTML = samsung.getBattery()+"%"
+        document.getElementById('batteryIphone').innerHTML = iphone.getBattery()+"%"
+    }
+    showBattery()
+
+
+    let myTimeoutSamSung;
+    function myGreeting() {
+        if (samsung.getBattery()<= 0){
+            document.getElementById('onOff-SamSung').disabled = true;
+            document.getElementById('screenSamSung').style.backgroundColor = "#605a5a";
+
+            clearTimeout(myTimeoutSamSung);
+            return
+        }
+        myTimeoutSamSung = setTimeout(myGreeting, 1000);
+        samsung.setBattery(samsung.getBattery()-1);
+        document.getElementById("batterySamSung").innerHTML = samsung.getBattery()+"%";
+
+    }
+
+    let myTimeoutIphone
+    function downBattery() {
+        if (iphone.getBattery()<= 0){
+            document.getElementById('onOffIphone').disabled = true;
+            document.getElementById('screenIphone').style.backgroundColor = "#605a5a";
+            clearTimeout(myTimeoutIphone);
+            return
+        }
+        myTimeoutIphone = setTimeout(downBattery, 1000);
+        iphone.setBattery(iphone.getBattery()-1);
+        document.getElementById("batteryIphone").innerHTML = iphone.getBattery()+"%";
+    }
+
+
+    let increaseSamSung;
+    function increaseBatterySamSung() {
+        if (samsung.getBattery()>=100){
+           clearTimeout(increaseSamSung);
+            return;
+        }
+        increaseSamSung = setTimeout(increaseBatterySamSung, 3000);
+        samsung.setBattery(samsung.getBattery()+1);
+        document.getElementById("batterySamSung").innerHTML = samsung.getBattery()+"%";
+    }
+
+    let increaseIphone;
+    function increaseBatteryIphone() {
+        if (iphone.getBattery()>=100){
+            clearTimeout(increaseIphone);
+            return;
+        }
+        increaseSamSung = setTimeout(increaseBatteryIphone, 3000);
+        iphone.setBattery(iphone.getBattery()+1);
+        document.getElementById("batterySamSung").innerHTML = iphone.getBattery()+"%";
+    }
+</script>
+</body>
+</html>
